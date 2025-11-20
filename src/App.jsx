@@ -15,12 +15,19 @@ import {
 } from 'firebase/firestore';
 
 // --- Firebase Configuration & Initialization ---
-const firebaseConfig = JSON.parse(__firebase_config);
+const firebaseConfig = {
+  apiKey: "AIzaSyBhm90CmJUhVevcebyZ3MzfTguIt-xN4_g",
+  authDomain: "msp-client-portal.firebaseapp.com",
+  projectId: "msp-client-portal",
+  storageBucket: "msp-client-portal.firebasestorage.app",
+  messagingSenderId: "762817959762",
+  appId: "1:762817959762:web:c10f22a402c3c5b0650c8b",
+  measurementId: "G-1WXPD859SN"
+};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
+const appId = "msp-client-portal";
 // --- Utils ---
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
