@@ -15,19 +15,11 @@ import {
 } from 'firebase/firestore';
 
 // --- Firebase Configuration & Initialization ---
-const firebaseConfig = {
-  apiKey: "AIzaSyBhm90CmJUhVevcebyZ3MzfTguIt-xN4_g",
-  authDomain: "msp-client-portal.firebaseapp.com",
-  projectId: "msp-client-portal",
-  storageBucket: "msp-client-portal.firebasestorage.app",
-  messagingSenderId: "762817959762",
-  appId: "1:762817959762:web:c10f22a402c3c5b0650c8b",
-  measurementId: "G-1WXPD859SN"
-};
+const firebaseConfig = JSON.parse(__firebase_config);
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = "msp-client-portal";
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
 // --- Utils ---
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -161,7 +153,7 @@ const ContactSection = ({ contactName, contactInfo, supportPhone, brandColor, is
   );
 };
 
-// 4. Admin Login Modal (UPDATED for Branding & Text Password)
+// 4. Admin Login Modal
 const AdminLogin = ({ onLogin, onCancel, brandColor, isDarkMode, mspSettings, currentPassword }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -242,7 +234,7 @@ const AdminLogin = ({ onLogin, onCancel, brandColor, isDarkMode, mspSettings, cu
   );
 };
 
-// 5. Global Settings Modal (UPDATED with Password Field)
+// 5. Global Settings Modal
 const GlobalSettingsModal = ({ settings, adminSettings, onSave, onClose, isDarkMode }) => {
   const [formData, setFormData] = useState(settings);
   const [password, setPassword] = useState(adminSettings?.password || 'access');
@@ -354,7 +346,7 @@ const GlobalSettingsModal = ({ settings, adminSettings, onSave, onClose, isDarkM
              </div>
           </div>
 
-          {/* Admin Security (NEW) */}
+          {/* Admin Security */}
            <div className="space-y-4 pt-2 border-t border-slate-700">
              <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider flex items-center gap-2">
                <Lock className="h-3 w-3" /> Admin Security
@@ -450,7 +442,7 @@ const AdminEditor = ({ data, mspSettings, onSave, onExit, isDarkMode }) => {
     setIsSaving(true);
     await onSave(formData);
     setIsSaving(false);
-    onExit(); // Navigate back to the list view after saving
+    onExit(); 
   };
 
   const addPoint = (e) => {
@@ -770,7 +762,7 @@ const AdminEditor = ({ data, mspSettings, onSave, onExit, isDarkMode }) => {
 
 // --- PAGE COMPONENTS ---
 
-// A. Landing Page (No Client ID selected) - UPDATED BRANDING
+// A. Landing Page (No Client ID selected) - UPDATED BRANDING & TEXT
 const LandingPage = ({ onAdminLogin, mspSettings }) => {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
@@ -791,7 +783,7 @@ const LandingPage = ({ onAdminLogin, mspSettings }) => {
            {mspSettings?.companyName || "MSP Client Portal"}
         </h1>
         <p className="text-slate-400 mb-8 text-sm leading-relaxed">
-          Please use the specific dashboard link provided by your Managed Service Provider to access your metrics.
+          If you are a customer, please use the specific dashboard link provided to you by {mspSettings?.companyName || "your Managed Service Provider"} to access your metrics.
         </p>
         
         <div className="border-t border-slate-800 pt-6">
@@ -1113,6 +1105,12 @@ export default function App() {
        alert("Failed to save settings");
     }
   };
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  // --- Render Logic ---
 
   const primaryColor = mspSettings.primaryColor || '#82baff';
   const secondaryColor = mspSettings.secondaryColor || '#1e293b';
